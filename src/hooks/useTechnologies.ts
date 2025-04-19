@@ -3,7 +3,7 @@ import { supabase } from "@/lib/supabaseClient";
 import { Database } from "@/types/database";
 
 export type TechFam = Database["public"]["Tables"]["TechFam"]["Row"];
-export type Tech = Database["public"]["Tables"]["Yech"]["Row"];
+export type Tech = Database["public"]["Tables"]["Tech"]["Row"];
 
 export function useTechnologies() {
   const [techFamilies, setTechFamilies] = useState<TechFam[]>([]);
@@ -33,7 +33,7 @@ export function useTechnologies() {
       setLoading(true);
       setError(null);
 
-      let query = supabase.from("Yech").select("*");
+      let query = supabase.from("Tech").select("*");
 
       if (techFamId) {
         query = query.eq("techFamId", techFamId);

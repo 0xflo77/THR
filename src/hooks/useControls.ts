@@ -4,7 +4,7 @@ import { Database } from "@/types/database";
 
 export type Control = Database["public"]["Tables"]["Controls"]["Row"];
 export type TechFam = Database["public"]["Tables"]["TechFam"]["Row"];
-export type Tech = Database["public"]["Tables"]["Yech"]["Row"];
+export type Tech = Database["public"]["Tables"]["Tech"]["Row"];
 
 interface UseControlsOptions {
   techFamId?: string;
@@ -16,24 +16,30 @@ interface UseControlsOptions {
 
 export function useControls(options: UseControlsOptions = {}) {
   const [controls, setControls] = useState<Control[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const fetchControls = async () => {
+    // Don't fetch if no techId is provided (lazy loading)
+    if (!options.techId && !options.searchTerm) {
+      setControls([]);
+      return;
+    }
+
     try {
       setLoading(true);
       setError(null);
 
       let query = supabase.from("Controls").select(`
           *,
-          Yech:techId(id, name, techFamId, TechFam:techFamId(id, name))
+          Tech:techId(id, name, techFamId, TechFam:techFamId(id, name))
         `);
 
       // Apply filters
       if (options.techId) {
         query = query.eq("techId", options.techId);
       } else if (options.techFamId) {
-        query = query.eq("Yech.techFamId", options.techFamId);
+        query = query.eq("Tech.techFamId", options.techFamId);
       }
 
       // Apply search
@@ -49,6 +55,10 @@ export function useControls(options: UseControlsOptions = {}) {
           ascending: options.sortDirection === "asc",
         });
       }
+
+      // Add pagination for lazy loading
+      const pageSize = 50; // Load 50 records at a time
+      query = query.range(0, pageSize - 1);
 
       const { data, error } = await query;
 

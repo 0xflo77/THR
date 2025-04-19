@@ -62,7 +62,7 @@ export interface Database {
           created_at?: string;
         };
       };
-      Yech: {
+      Tech: {
         Row: {
           id: string;
           name: string;

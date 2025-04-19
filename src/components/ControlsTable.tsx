@@ -77,7 +77,9 @@ const ControlsTable: React.FC<ControlsTableProps> = ({
   if (controls.length === 0 && !loading) {
     return (
       <div className="w-full p-4 bg-gray-50 text-gray-600 rounded-md border border-gray-200 text-center">
-        No controls found. Try adjusting your filters or adding new controls.
+        {!techId
+          ? "Please select a technology to view controls."
+          : "No controls found. Try adjusting your filters or adding new controls."}
       </div>
     );
   }

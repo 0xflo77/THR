@@ -153,17 +153,19 @@ const EditControlForm: React.FC<EditControlFormProps> = ({
             )}
           </div>
 
-          <div className="space-y-2">
+          <div className="space-y-2 col-span-1 md:col-span-2">
             <Label
               htmlFor="THR_code"
               className={errors.THR_code ? "text-destructive" : ""}
             >
-              THR Code
+              THR Code (YAML)
             </Label>
-            <Input
+            <Textarea
               id="THR_code"
               {...register("THR_code")}
-              className={errors.THR_code ? "border-destructive" : ""}
+              rows={8}
+              className={`font-mono text-sm ${errors.THR_code ? "border-destructive" : ""}`}
+              placeholder="Enter YAML code for Ansible automation"
             />
             {errors.THR_code && (
               <p className="text-xs text-destructive">
