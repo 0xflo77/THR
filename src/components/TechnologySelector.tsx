@@ -16,14 +16,20 @@ interface TechnologySelectorProps {
   onFamilyChange?: (familyId: string, familyName: string) => void;
   onTechnologyChange?: (techId: string, techName: string) => void;
   onSearchChange?: (searchTerm: string) => void;
+  initialFamilyId?: string;
+  initialTechId?: string;
 }
 
 const TechnologySelector = ({
   onFamilyChange = () => {},
   onTechnologyChange = () => {},
   onSearchChange = () => {},
+  initialFamilyId,
+  initialTechId,
 }: TechnologySelectorProps) => {
-  const [selectedFamilyId, setSelectedFamilyId] = useState<string | null>(null);
+  const [selectedFamilyId, setSelectedFamilyId] = useState<string | null>(
+    initialFamilyId || null,
+  );
   const [searchTerm, setSearchTerm] = useState("");
 
   const { techFamilies, technologies, loading, error, fetchTechnologies } =
@@ -34,24 +40,41 @@ const TechnologySelector = ({
     if (techFamilies.length > 0 && !selectedFamilyId) {
       const firstFamily = techFamilies[0];
       setSelectedFamilyId(firstFamily.id);
-      onFamilyChange(firstFamily.id, firstFamily.name);
+      onFamilyChange(firstFamily.id, firstFamily.title);
       fetchTechnologies(firstFamily.id);
+    } else if (selectedFamilyId) {
+      // If we already have a selected family ID, fetch its technologies
+      fetchTechnologies(selectedFamilyId);
     }
   }, [techFamilies, selectedFamilyId]);
 
+  // Initialize with initial tech ID if provided
+  useEffect(() => {
+    if (initialTechId && technologies.length > 0) {
+      const tech = technologies.find((t) => t.id === initialTechId);
+      if (tech) {
+        onTechnologyChange(tech.id, tech.title);
+      }
+    }
+  }, [initialTechId, technologies]);
+
   const handleFamilyChange = (value: string) => {
+    console.log("TechnologySelector - Family selected:", value);
     setSelectedFamilyId(value);
     const family = techFamilies.find((f) => f.id === value);
     if (family) {
-      onFamilyChange(family.id, family.name);
+      console.log("TechnologySelector - Found family:", family);
+      onFamilyChange(family.id, family.title);
       fetchTechnologies(family.id);
     }
   };
 
   const handleTechnologyChange = (value: string) => {
+    console.log("TechnologySelector - Technology value selected:", value);
     const tech = technologies.find((t) => t.id === value);
     if (tech) {
-      onTechnologyChange(tech.id, tech.name);
+      console.log("TechnologySelector - Found technology:", tech);
+      onTechnologyChange(tech.id, tech.title);
     }
   };
 
@@ -78,7 +101,7 @@ const TechnologySelector = ({
   }
 
   return (
-    <div className="w-full bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+    <div className="w-full bg-white dark:bg-background p-4 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
       <div className="flex flex-col space-y-4 md:flex-row md:items-center md:justify-between md:space-y-0 md:space-x-4">
         <div className="flex-1">
           <Tabs
@@ -89,7 +112,7 @@ const TechnologySelector = ({
             <TabsList className="w-full md:w-auto grid grid-cols-3 md:flex md:flex-row">
               {techFamilies.map((family) => (
                 <TabsTrigger key={family.id} value={family.id}>
-                  {family.name}
+                  {family.title}
                 </TabsTrigger>
               ))}
             </TabsList>
@@ -104,7 +127,7 @@ const TechnologySelector = ({
             <SelectContent>
               {technologies.map((tech) => (
                 <SelectItem key={tech.id} value={tech.id}>
-                  {tech.name}
+                  {tech.title}
                 </SelectItem>
               ))}
             </SelectContent>

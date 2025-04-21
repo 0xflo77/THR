@@ -4,43 +4,46 @@ export interface Database {
       Controls: {
         Row: {
           id: string;
+          tech_id: string;
+          techfam_id: string;
           controlFamily: string;
           controlType: string;
+          ranking: number | null;
           description: string;
           statement: string;
-          monitorID: string;
           recommendation: string;
           THR_code: string;
-          comments: string;
-          techId: string;
+          comments: string | null;
           created_at?: string;
           updated_at?: string;
         };
         Insert: {
           id: string;
+          tech_id: string;
+          techfam_id: string;
           controlFamily: string;
           controlType: string;
+          ranking?: number | null;
           description: string;
           statement: string;
-          monitorID: string;
           recommendation: string;
           THR_code: string;
-          comments?: string;
-          techId: string;
+          comments?: string | null;
           created_at?: string;
           updated_at?: string;
         };
         Update: {
           id?: string;
+          tech_id?: string;
+          techfam_id?: string;
           controlFamily?: string;
           controlType?: string;
+          ranking?: number | null;
           description?: string;
           statement?: string;
-          monitorID?: string;
           recommendation?: string;
           THR_code?: string;
-          comments?: string;
-          techId?: string;
+          comments?: string | null;
           created_at?: string;
           updated_at?: string;
         };
@@ -48,37 +51,37 @@ export interface Database {
       TechFam: {
         Row: {
           id: string;
-          name: string;
+          title: string;
           created_at?: string;
         };
         Insert: {
-          id: string;
-          name: string;
+          id?: string;
+          title: string;
           created_at?: string;
         };
         Update: {
           id?: string;
-          name?: string;
+          title?: string;
           created_at?: string;
         };
       };
       Tech: {
         Row: {
           id: string;
-          name: string;
-          techFamId: string;
+          techfam_id: string;
+          title: string;
           created_at?: string;
         };
         Insert: {
-          id: string;
-          name: string;
-          techFamId: string;
+          id?: string;
+          techfam_id: string;
+          title: string;
           created_at?: string;
         };
         Update: {
           id?: string;
-          name?: string;
-          techFamId?: string;
+          techfam_id?: string;
+          title?: string;
           created_at?: string;
         };
       };

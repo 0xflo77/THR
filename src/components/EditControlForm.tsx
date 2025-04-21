@@ -18,14 +18,18 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 
 const controlSchema = z.object({
   id: z.string().min(1, { message: "ID is required" }),
+  tech_id: z.string().min(1, { message: "Technology ID is required" }),
+  techfam_id: z
+    .string()
+    .min(1, { message: "Technology Family ID is required" }),
   controlFamily: z.string().min(1, { message: "Control family is required" }),
   controlType: z.string().min(1, { message: "Control type is required" }),
+  ranking: z.number().nullable().optional(),
   description: z.string().min(1, { message: "Description is required" }),
   statement: z.string().min(1, { message: "Statement is required" }),
-  monitorID: z.string().optional(),
   recommendation: z.string().min(1, { message: "Recommendation is required" }),
   THR_code: z.string().min(1, { message: "THR code is required" }),
-  comments: z.string().optional(),
+  comments: z.string().nullable().optional(),
 });
 
 type ControlFormValues = z.infer<typeof controlSchema>;
@@ -39,11 +43,13 @@ interface EditControlFormProps {
 
 const defaultControl: ControlFormValues = {
   id: "",
+  tech_id: "",
+  techfam_id: "",
   controlFamily: "",
   controlType: "",
+  ranking: null,
   description: "",
   statement: "",
-  monitorID: "",
   recommendation: "",
   THR_code: "",
   comments: "",
@@ -153,6 +159,26 @@ const EditControlForm: React.FC<EditControlFormProps> = ({
             )}
           </div>
 
+          <div className="space-y-2">
+            <Label
+              htmlFor="ranking"
+              className={errors.ranking ? "text-destructive" : ""}
+            >
+              Ranking
+            </Label>
+            <Input
+              id="ranking"
+              type="number"
+              {...register("ranking", { valueAsNumber: true })}
+              className={errors.ranking ? "border-destructive" : ""}
+            />
+            {errors.ranking && (
+              <p className="text-xs text-destructive">
+                {errors.ranking.message}
+              </p>
+            )}
+          </div>
+
           <div className="space-y-2 col-span-1 md:col-span-2">
             <Label
               htmlFor="THR_code"
@@ -163,32 +189,13 @@ const EditControlForm: React.FC<EditControlFormProps> = ({
             <Textarea
               id="THR_code"
               {...register("THR_code")}
-              rows={8}
+              rows={12}
               className={`font-mono text-sm ${errors.THR_code ? "border-destructive" : ""}`}
               placeholder="Enter YAML code for Ansible automation"
             />
             {errors.THR_code && (
               <p className="text-xs text-destructive">
                 {errors.THR_code.message}
-              </p>
-            )}
-          </div>
-
-          <div className="space-y-2">
-            <Label
-              htmlFor="monitorID"
-              className={errors.monitorID ? "text-destructive" : ""}
-            >
-              Monitor ID
-            </Label>
-            <Input
-              id="monitorID"
-              {...register("monitorID")}
-              className={errors.monitorID ? "border-destructive" : ""}
-            />
-            {errors.monitorID && (
-              <p className="text-xs text-destructive">
-                {errors.monitorID.message}
               </p>
             )}
           </div>
