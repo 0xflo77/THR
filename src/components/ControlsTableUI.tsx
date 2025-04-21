@@ -56,119 +56,139 @@ const ControlsTableUI: React.FC<ControlsTableUIProps> = ({
   };
 
   return (
-    <div className="rounded-md border shadow-sm">
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead className="w-10"></TableHead>
-            <TableHead className="w-20" onClick={() => onSort("id")}>
-              <div className="flex items-center cursor-pointer">
-                ID {renderSortIcon("id")}
-              </div>
-            </TableHead>
-            <TableHead onClick={() => onSort("controlFamily")}>
-              <div className="flex items-center cursor-pointer">
-                Control Family {renderSortIcon("controlFamily")}
-              </div>
-            </TableHead>
-            <TableHead onClick={() => onSort("controlType")}>
-              <div className="flex items-center cursor-pointer">
-                Type {renderSortIcon("controlType")}
-              </div>
-            </TableHead>
-            <TableHead className="w-1/3" onClick={() => onSort("statement")}>
-              <div className="flex items-center cursor-pointer">
-                Statement {renderSortIcon("statement")}
-              </div>
-            </TableHead>
-            <TableHead onClick={() => onSort("THR_code")}>
-              <div className="flex items-center cursor-pointer">
-                THR Code {renderSortIcon("THR_code")}
-              </div>
-            </TableHead>
-            <TableHead className="w-20">Actions</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {controls.map((control) => (
-            <React.Fragment key={control.id}>
-              <TableRow
-                className="cursor-pointer hover:bg-muted/50"
-                onClick={() => onRowClick(control)}
+    <div className="rounded-md border shadow-sm overflow-hidden">
+      <div className="max-h-[70vh] overflow-y-auto scrollbar-thin">
+        <Table className="min-w-[1200px] w-full">
+          <TableHeader className="sticky top-0 bg-background z-10">
+            <TableRow>
+              <TableHead className="w-10"></TableHead>
+              <TableHead className="w-16" onClick={() => onSort("id")}>
+                <div className="flex items-center cursor-pointer">
+                  ID {renderSortIcon("id")}
+                </div>
+              </TableHead>
+              <TableHead
+                className="w-[180px]"
+                onClick={() => onSort("controlFamily")}
               >
-                <TableCell>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={(e) => onExpandRow(control.id, e)}
-                  >
-                    {expandedRow === control.id ? (
-                      <ChevronUp className="h-4 w-4" />
-                    ) : (
-                      <ChevronDown className="h-4 w-4" />
-                    )}
-                  </Button>
-                </TableCell>
-                <TableCell className="font-medium">{control.id}</TableCell>
-                <TableCell>{control.controlFamily}</TableCell>
-                <TableCell>
-                  <Badge variant="outline">{control.controlType}</Badge>
-                </TableCell>
-                <TableCell>{truncateText(control.statement, 150)}</TableCell>
-                <TableCell>{truncateText(control.THR_code, 30)}</TableCell>
-                <TableCell>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onRowClick(control);
-                    }}
-                  >
-                    <Edit className="h-4 w-4" />
-                  </Button>
-                </TableCell>
-              </TableRow>
-              {expandedRow === control.id && (
-                <TableRow className="bg-muted/30">
-                  <TableCell colSpan={7} className="p-4">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <div>
-                        <h4 className="font-semibold mb-1">Description</h4>
-                        <p className="text-sm whitespace-pre-line">
-                          {control.description}
-                        </p>
-                      </div>
-                      <div>
-                        <h4 className="font-semibold mb-1">Recommendation</h4>
-                        <div className="text-sm whitespace-pre-line max-h-60 overflow-y-auto pr-2">
-                          {control.recommendation}
-                        </div>
-                      </div>
-                      <div>
-                        <h4 className="font-semibold mb-1">Monitor ID</h4>
-                        <p className="text-sm">{control.monitorID}</p>
-                      </div>
-                      <div>
-                        <h4 className="font-semibold mb-1">THR Code</h4>
-                        <pre className="text-xs bg-slate-100 p-2 rounded overflow-x-auto">
-                          {control.THR_code}
-                        </pre>
-                      </div>
-                      <div>
-                        <h4 className="font-semibold mb-1">Comments</h4>
-                        <div className="text-sm whitespace-pre-line max-h-60 overflow-y-auto pr-2">
-                          {control.comments}
-                        </div>
-                      </div>
-                    </div>
+                <div className="flex items-center cursor-pointer">
+                  Control Family {renderSortIcon("controlFamily")}
+                </div>
+              </TableHead>
+              <TableHead
+                className="w-[120px]"
+                onClick={() => onSort("controlType")}
+              >
+                <div className="flex items-center cursor-pointer">
+                  Type {renderSortIcon("controlType")}
+                </div>
+              </TableHead>
+              <TableHead
+                className="w-[400px]"
+                onClick={() => onSort("statement")}
+              >
+                <div className="flex items-center cursor-pointer">
+                  Statement {renderSortIcon("statement")}
+                </div>
+              </TableHead>
+              <TableHead
+                className="w-[200px]"
+                onClick={() => onSort("THR_code")}
+              >
+                <div className="flex items-center cursor-pointer">
+                  THR Code {renderSortIcon("THR_code")}
+                </div>
+              </TableHead>
+              <TableHead className="w-16">Actions</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {controls.map((control) => (
+              <React.Fragment key={control.id}>
+                <TableRow
+                  className="cursor-pointer hover:bg-muted/50"
+                  onClick={() => onRowClick(control)}
+                >
+                  <TableCell>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={(e) => onExpandRow(control.id, e)}
+                    >
+                      {expandedRow === control.id ? (
+                        <ChevronUp className="h-4 w-4" />
+                      ) : (
+                        <ChevronDown className="h-4 w-4" />
+                      )}
+                    </Button>
+                  </TableCell>
+                  <TableCell className="font-medium">{control.id}</TableCell>
+                  <TableCell>{control.controlFamily}</TableCell>
+                  <TableCell>
+                    <Badge variant="outline">{control.controlType}</Badge>
+                  </TableCell>
+                  <TableCell className="max-w-[400px]">
+                    {truncateText(control.statement, 150)}
+                  </TableCell>
+                  <TableCell className="max-w-[200px] font-mono text-xs">
+                    {truncateText(control.THR_code, 30)}
+                  </TableCell>
+                  <TableCell>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onRowClick(control);
+                      }}
+                    >
+                      <Edit className="h-4 w-4" />
+                    </Button>
                   </TableCell>
                 </TableRow>
-              )}
-            </React.Fragment>
-          ))}
-        </TableBody>
-      </Table>
+                {expandedRow === control.id && (
+                  <TableRow className="bg-muted/30">
+                    <TableCell colSpan={7} className="p-4">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                          <h4 className="font-semibold mb-1">Description</h4>
+                          <p className="text-sm whitespace-pre-line">
+                            {control.description}
+                          </p>
+                        </div>
+                        <div>
+                          <h4 className="font-semibold mb-1">Recommendation</h4>
+                          <div className="text-sm whitespace-pre-line max-h-60 overflow-y-auto pr-2">
+                            {control.recommendation}
+                          </div>
+                        </div>
+                        <div>
+                          <h4 className="font-semibold mb-1">Ranking</h4>
+                          <p className="text-sm">
+                            {control.ranking || "Not ranked"}
+                          </p>
+                        </div>
+                        <div>
+                          <h4 className="font-semibold mb-1">THR Code</h4>
+                          <pre className="text-xs bg-slate-100 dark:bg-slate-800 p-2 rounded overflow-x-auto h-24 scrollbar-thin whitespace-pre-wrap">
+                            {control.THR_code}
+                          </pre>
+                        </div>
+                        <div>
+                          <h4 className="font-semibold mb-1">Comments</h4>
+                          <div className="text-sm whitespace-pre-line max-h-60 overflow-y-auto pr-2">
+                            {control.comments}
+                          </div>
+                        </div>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                )}
+              </React.Fragment>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
     </div>
   );
 };

@@ -2,10 +2,10 @@
 module.exports = {
   darkMode: ["class"],
   content: [
-    './pages/**/*.{ts,tsx}',
-    './components/**/*.{ts,tsx}',
-    './app/**/*.{ts,tsx}',
-    './src/**/*.{ts,tsx}',
+    "./pages/**/*.{ts,tsx}",
+    "./components/**/*.{ts,tsx}",
+    "./app/**/*.{ts,tsx}",
+    "./src/**/*.{ts,tsx}",
   ],
   prefix: "",
   theme: {
@@ -51,6 +51,16 @@ module.exports = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        // Cybersecurity theme colors
+        cyber: {
+          blue: "#0a84ff",
+          darkblue: "#0a4d8c",
+          gray: "#2c3e50",
+          lightgray: "#ecf0f1",
+          red: "#e74c3c",
+          green: "#2ecc71",
+          yellow: "#f1c40f",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -74,4 +84,4 @@ module.exports = {
     },
   },
   plugins: [require("tailwindcss-animate")],
-}
+};

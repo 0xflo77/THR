@@ -28,15 +28,15 @@ export function useTechnologies() {
     }
   };
 
-  const fetchTechnologies = async (techFamId?: string) => {
+  const fetchTechnologies = async (techfam_id?: string) => {
     try {
       setLoading(true);
       setError(null);
 
       let query = supabase.from("Tech").select("*");
 
-      if (techFamId) {
-        query = query.eq("techFamId", techFamId);
+      if (techfam_id) {
+        query = query.eq("techfam_id", techfam_id);
       }
 
       const { data, error } = await query;

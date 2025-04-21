@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Shield } from "lucide-react";
 import TechnologySelector from "./TechnologySelector";
 import ControlsTable from "./ControlsTable";
+import { ThemeToggle } from "./ThemeToggle";
+import { useTechnologies } from "@/hooks/useTechnologies";
 
 interface Control {
   id: string;
@@ -17,9 +19,22 @@ interface Control {
 }
 
 const Home = () => {
-  const [selectedFamily, setSelectedFamily] = useState<string>("OS");
-  const [selectedTechnology, setSelectedTechnology] =
-    useState<string>("Windows 11");
+  const [selectedFamily, setSelectedFamily] = useState<string>("");
+  const [selectedTechnology, setSelectedTechnology] = useState<string>("");
+  const [selectedFamilyId, setSelectedFamilyId] = useState<
+    string | undefined
+  >();
+  const [selectedTechId, setSelectedTechId] = useState<string | undefined>();
+
+  const { techFamilies, technologies, fetchTechnologies } = useTechnologies();
+
+  // Load technologies when family changes
+  useEffect(() => {
+    if (selectedFamilyId) {
+      fetchTechnologies(selectedFamilyId);
+    }
+  }, [selectedFamilyId, fetchTechnologies]);
+
   const [controls, setControls] = useState<Control[]>([
     {
       id: "OS-WIN-001",
@@ -91,22 +106,19 @@ const Home = () => {
     },
   ]);
 
-  const handleFamilyChange = (family: string) => {
-    setSelectedFamily(family);
-    // In a real application, you would fetch technologies for the selected family
-    // and update the selected technology accordingly
-    if (family === "OS") {
-      setSelectedTechnology("Windows 11");
-    } else if (family === "Database") {
-      setSelectedTechnology("SQL Server");
-    } else {
-      setSelectedTechnology("");
-    }
+  const handleFamilyChange = (familyId: string, familyName: string) => {
+    console.log("Home - Family changed:", familyId, familyName);
+    setSelectedFamily(familyName);
+    setSelectedFamilyId(familyId);
+    // Reset technology when family changes
+    setSelectedTechnology("");
+    setSelectedTechId(undefined);
   };
 
-  const handleTechnologyChange = (technology: string) => {
-    setSelectedTechnology(technology);
-    // In a real application, you would fetch controls for the selected technology
+  const handleTechnologyChange = (techId: string, techName: string) => {
+    console.log("Home - Technology changed:", techId, techName);
+    setSelectedTechnology(techName);
+    setSelectedTechId(techId);
   };
 
   const handleControlUpdate = (updatedControl: Control) => {
@@ -130,10 +142,11 @@ const Home = () => {
             <Shield className="h-8 w-8 text-blue-400" />
             <h1 className="text-2xl font-bold">THR Registry</h1>
           </motion.div>
-          <div className="flex space-x-4">
+          <div className="flex space-x-4 items-center">
             <span className="text-slate-300">
               Technical Hardening Requirements Management System
             </span>
+            <ThemeToggle />
           </div>
         </div>
       </header>
@@ -145,10 +158,9 @@ const Home = () => {
           transition={{ duration: 0.5, delay: 0.2 }}
         >
           <TechnologySelector
-            selectedFamily={selectedFamily}
-            selectedTechnology={selectedTechnology}
             onFamilyChange={handleFamilyChange}
             onTechnologyChange={handleTechnologyChange}
+            onSearchChange={(term) => console.log("Search term:", term)}
           />
         </motion.div>
 
@@ -159,8 +171,17 @@ const Home = () => {
           className="mt-6"
         >
           <ControlsTable
-            controls={controls}
-            onControlUpdate={handleControlUpdate}
+            techfam_id={
+              selectedFamily === ""
+                ? undefined
+                : techFamilies.find((f) => f.title === selectedFamily)?.id
+            }
+            tech_id={
+              selectedTechnology === ""
+                ? undefined
+                : technologies.find((t) => t.title === selectedTechnology)?.id
+            }
+            searchTerm=""
           />
         </motion.div>
       </main>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Card } from "@/components/ui/card";
 import { Loader2 } from "lucide-react";
 import EditControlForm from "./EditControlForm";
@@ -6,16 +6,23 @@ import ControlsTableUI from "./ControlsTableUI";
 import { useControls, Control } from "@/hooks/useControls";
 
 interface ControlsTableProps {
-  techFamId?: string;
-  techId?: string;
+  techfam_id?: string;
+  tech_id?: string;
   searchTerm?: string;
 }
 
 const ControlsTable: React.FC<ControlsTableProps> = ({
-  techFamId,
-  techId,
+  techfam_id,
+  tech_id,
   searchTerm,
 }) => {
+  // Log props for debugging
+  console.log("ControlsTable props:", { techfam_id, tech_id, searchTerm });
+
+  // Force re-fetch when props change
+  useEffect(() => {
+    fetchControls();
+  }, [techfam_id, tech_id, searchTerm]);
   const [expandedRow, setExpandedRow] = useState<string | null>(null);
   const [editingControl, setEditingControl] = useState<Control | null>(null);
   const [sortColumn, setSortColumn] = useState<keyof Control | null>(null);
@@ -23,8 +30,8 @@ const ControlsTable: React.FC<ControlsTableProps> = ({
 
   // Use the custom hook to fetch controls from Supabase
   const { controls, loading, error, saveControl, fetchControls } = useControls({
-    techFamId,
-    techId,
+    techfam_id,
+    tech_id,
     searchTerm,
     sortColumn: sortColumn || undefined,
     sortDirection,
@@ -77,8 +84,8 @@ const ControlsTable: React.FC<ControlsTableProps> = ({
   if (controls.length === 0 && !loading) {
     return (
       <div className="w-full p-4 bg-gray-50 text-gray-600 rounded-md border border-gray-200 text-center">
-        {!techId
-          ? "Please select a technology to view controls."
+        {!tech_id && !techfam_id
+          ? "Please select a technology family or technology to view controls."
           : "No controls found. Try adjusting your filters or adding new controls."}
       </div>
     );
